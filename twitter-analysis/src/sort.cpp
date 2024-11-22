@@ -168,6 +168,76 @@ void insertionSort (std::vector<Tweet>& tweets, const std::string& sortBy, bool 
     }
 }
 
-void merge (std::vector<Tweet>& tweets, int left, int mid, int right, const std::string& sortBy, bool ascending) {}
+void merge (std::vector<Tweet>& tweets, int left, int mid, int right, const std::string& sortBy, bool ascending) {
+    int size1 = mid - left + 1; int size2 = right - mid; 
+    Tweet* arrL = new Tweet[size1];
+    Tweet* arrR = new Tweet[size2];
 
-void mergeSort (std::vector<Tweet>& tweets, int left, int right, const std::string& sortBy, bool ascending) {}
+    for (int i = 0; i < size1; i++) {arrL[i] = tweets[left + i];}
+    for (int i = 0; i < size2; i++) {arrR[i] = tweets[mid + 1 + i];}
+    
+    int it1 = 0; int it2 = 0; int writer = left; 
+
+    if (ascending && sortBy == "tweetID") {
+        while (it1 < size1 && it2 < size2) {
+            if (arrL[it1].tweetID <= arrR[it2].tweetID) {
+                tweets[writer++] = arrL[it1++];
+            } else {
+                tweets[writer++] = arrR[it2++];
+            }
+        }
+    } else if (ascending && sortBy == "retweetCount") {
+        while (it1 < size1 && it2 < size2) {
+            if (arrL[it1].retweetCount <= arrR[it2].retweetCount) {
+                tweets[writer++] = arrL[it1++];
+            } else {
+                tweets[writer++] = arrR[it2++];
+            }
+        }    
+    } else if (ascending && sortBy == "favoriteCount") {
+        while (it1 < size1 && it2 < size2) {
+            if (arrL[it1].favoriteCount <= arrR[it2].favoriteCount) {
+                tweets[writer++] = arrL[it1++];
+            } else {
+                tweets[writer++] = arrR[it2++];
+            }
+        }    
+    } else if (!ascending && sortBy == "tweetID") {
+        while (it1 < size1 && it2 < size2) {
+            if (arrL[it1].tweetID >= arrR[it2].tweetID) {
+                tweets[writer++] = arrL[it1++];
+            } else {
+                tweets[writer++] = arrR[it2++];
+            }
+        }    
+    } else if (!ascending && sortBy == "retweetCount") {
+        while (it1 < size1 && it2 < size2) {
+            if (arrL[it1].retweetCount >= arrR[it2].retweetCount) {
+                tweets[writer++] = arrL[it1++];
+            } else {
+                tweets[writer++] = arrR[it2++];
+            }
+        }    
+    } else if (!ascending && sortBy == "favoriteCount") {
+        while (it1 < size1 && it2 < size2) {
+            if (arrL[it1].favoriteCount >= arrR[it2].favoriteCount) {
+                tweets[writer++] = arrL[it1++];
+            } else {
+                tweets[writer++] = arrR[it2++];
+            }
+        }    
+    }
+
+    while (it1 < size1) {tweets[writer++] = arrL[it1++];}
+    while (it2 < size2) {tweets[writer++] = arrR[it2++];}
+
+    delete [] arrL; delete [] arrR;
+}
+
+void mergeSort (std::vector<Tweet>& tweets, int left, int right, const std::string& sortBy, bool ascending) {
+    if (left >= right) {return;}
+    int mid = (left + right) / 2;
+    mergeSort(tweets, left, mid, sortBy, ascending);
+    mergeSort(tweets, mid + 1, right, sortBy, ascending);
+    merge(tweets, left, mid, right, sortBy, ascending);
+}
