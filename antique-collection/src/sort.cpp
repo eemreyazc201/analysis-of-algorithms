@@ -33,9 +33,10 @@ std::vector<Item> countingSort (std::vector<Item>& items, const std::string& att
 }
 
 void heapify (std::vector<Item>& items, int n, int i, bool descending) {
-    int rightChild = 2 * i + 2; int leftChild = 2 * i + 1; if (rightChild >= n) {return;}
-    int toBeSwapped = (descending) ? ((items[rightChild].rarityScore < items[leftChild].rarityScore) ? rightChild : leftChild) : ((items[rightChild].rarityScore < items[leftChild].rarityScore) ? leftChild : rightChild);
-    if ((items[toBeSwapped].rarityScore > items[i].rarityScore && !descending) || (items[toBeSwapped].rarityScore < items[i].rarityScore && descending)) {
+    int rightChild = 2 * i + 2; int leftChild = 2 * i + 1; int toBeSwapped = i; 
+    if (leftChild < n && ((items[leftChild].rarityScore > items[i].rarityScore && !descending) || (items[leftChild].rarityScore < items[i].rarityScore && descending))) {toBeSwapped = leftChild;}
+    if (rightChild < n && ((items[rightChild].rarityScore > items[toBeSwapped].rarityScore && !descending) || (items[rightChild].rarityScore < items[toBeSwapped].rarityScore && descending))) {toBeSwapped = rightChild;}
+    if (toBeSwapped != i) {
         Item temp = items[i]; items[i] = items[toBeSwapped]; items[toBeSwapped] = temp;
         heapify(items, n, toBeSwapped, descending);
     }
