@@ -32,6 +32,20 @@ std::vector<Item> countingSort (std::vector<Item>& items, const std::string& att
     } else {std::cerr << "Invalid attribute\n"; return items;} // rarityScore is double, so it is not possible to sort by it using counting sort
 }
 
-void heapify (std::vector<Item>& items, int n, int i, bool descending) {}
+void heapify (std::vector<Item>& items, int n, int i, bool descending) {
+    int rightChild = 2 * i + 2; int leftChild = 2 * i + 1; if (rightChild >= n) {return;}
+    int toBeSwapped = (descending) ? ((items[rightChild].rarityScore < items[leftChild].rarityScore) ? rightChild : leftChild) : ((items[rightChild].rarityScore < items[leftChild].rarityScore) ? leftChild : rightChild);
+    if ((items[toBeSwapped].rarityScore > items[i].rarityScore && !descending) || (items[toBeSwapped].rarityScore < items[i].rarityScore && descending)) {
+        Item temp = items[i]; items[i] = items[toBeSwapped]; items[toBeSwapped] = temp;
+        heapify(items, n, toBeSwapped, descending);
+    }
+}
 
-std::vector<Item> heapSortByRarity (std::vector<Item>& items, bool descending) {}
+std::vector<Item> heapSortByRarity (std::vector<Item>& items, bool descending) {
+    int n = items.size();
+    for (int i = n / 2 - 1; i >= 0; i--) {heapify(items, n, i, descending);} // build heap
+    for (int i = n - 1; i > 0; i--) {
+        Item temp = items[0]; items[0] = items[i]; items[i] = temp; // put maximum element at the end
+        heapify(items, i, 0, descending); // heapify reduced heap
+    } return items;
+}
