@@ -1,3 +1,6 @@
 [submodule "twitter-analysis/lib/munit"]
 	path = twitter-analysis/lib/munit
 	url = https://github.com/nemequ/munit.git
+[submodule "antique-collection/lib/munit"]
+	path = antique-collection/lib/munit
+	url = https://github.com/nemequ/munit.git
