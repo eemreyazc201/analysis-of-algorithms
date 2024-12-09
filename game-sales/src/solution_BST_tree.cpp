@@ -24,11 +24,7 @@ class Node {
 		publisher key; Node *parent, *left, *right;
 		int color; // "Red" = 1 or "Black" = 0
 	
-		Node (publisher key) : key (key), parent (NULL), left (NULL), right (NULL), color (1) {} ~Node () {
-    
-			// Fill this function.		
-
-		}
+		Node (publisher key) : key (key), parent (NULL), left (NULL), right (NULL), color (1) {}
 		
 		int get_color () {return color;} void set_color (int color) {this->color = color;}
 };
@@ -40,9 +36,7 @@ class BST_tree {
 		stack<string> tree_deep_stack;
 
         BST_tree () : root (NULL), best_seller {NULL, NULL, NULL} {} ~BST_tree () {
-
-		    // Fill this function.
-
+			delete root->left; delete root->right; delete root;
 		}
 
         Node* get_root () {return this->root;}
