@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <iomanip>
 #include <string.h>
+#include <string>
 #include <fstream>
 #include <vector>
 #include <algorithm>
