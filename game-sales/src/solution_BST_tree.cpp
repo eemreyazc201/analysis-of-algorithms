@@ -25,7 +25,9 @@ class Node {
 		publisher key; Node *parent, *left, *right;
 		int color; // "Red" = 1 or "Black" = 0
 	
-		Node (publisher key) : key (key), parent (NULL), left (NULL), right (NULL), color (1) {}
+		Node (publisher key) : key (key), parent (NULL), left (NULL), right (NULL), color (1) {} ~Node () {
+			delete left; delete right;
+		}
 		
 		int get_color () {return color;} void set_color (int color) {this->color = color;}
 };
@@ -37,7 +39,7 @@ class BST_tree {
 		stack<string> tree_deep_stack;
 
         BST_tree () : root (NULL), best_seller {NULL, NULL, NULL} {} ~BST_tree () {
-			delete root->left; delete root->right; delete root;
+			delete root; delete best_seller[0]; delete best_seller[1]; delete best_seller[2]; delete best_seller;
 		}
 
         Node* get_root () {return this->root;}
@@ -65,9 +67,8 @@ class BST_tree {
 		}
 
 		void insertValue (vector<string> n) {
-		    
-			// Fill this function.
-		
+			publisher temp; temp.name = n[3]; temp.na_sales = stof(n[4]); temp.eu_sales = stof(n[5]); temp.others_sales = stof(n[6]);
+			Node* ptr = new Node(temp); root = BST_insert(root, ptr);
 		}
 
         void find_best_seller () {
@@ -86,23 +87,13 @@ void print_best_sellers (int year, publisher* temp_publisher[3]) {
 }
 
 BST_tree generate_BST_tree_from_csv (string file_name) {
-    BST_tree temp_BSTtree; 
-	
-	
-	
-	vector<publisher> publishers; ifstream file (file_name); if (file.is_open()) {
+    BST_tree temp_BSTtree; ifstream file (file_name); if (file.is_open()) {
 		string line; getline(file, line); while (getline(file, line)) {
-			stringstream ss (line); string name, platform, year, publisherName; float na_sales, eu_sales, others_sales;
-			ss >> name; ss.ignore(1, ','); ss >> platform; ss.ignore(1, ','); ss >> year; ss.ignore(1, ','); ss >> publisherName; ss.ignore(1, ','); ss >> na_sales; ss.ignore(1, ','); ss >> eu_sales; ss.ignore(1, ','); ss >> others_sales;
-			
-			
-			
-			
-			
-
+			vector<string> tokens; string token = ""; for (int i = 0; i < line.size(); i++) {
+				if (line[i] == ',') {tokens.push_back(token); token = "";} else {token += line[i];}
+			} tokens.push_back(token); temp_BSTtree.insertValue(tokens);
 		} file.close();
-	} else {cerr << "Error: Unable to open file " << file_name << endl;
-	}
+	} else {cerr << "Error: Unable to open file " << file_name << endl;}
 
     return temp_BSTtree;
 }
