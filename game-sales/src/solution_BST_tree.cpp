@@ -32,6 +32,17 @@ class Node {
 		int get_color () {return color;} void set_color (int color) {this->color = color;}
 };
 
+enum Alphabetic_Order {BIGGER, EQUAL, SMALLER};
+Alphabetic_Order compareAlphabetically (publisher& a, publisher& b) {
+	int size = min(a.name.size(), b.name.size()); for (int i = 0; i < size; i++) {
+		char ai = (char)tolower(a.name[i]); char bi = (char)tolower(b.name[i]);
+		if (ai == bi) {continue;} 
+		else {return (ai < bi) ? SMALLER : BIGGER;}
+	}
+
+	return (a.name.size() == b.name.size()) ? EQUAL : ((a.name.size() < b.name.size()) ? SMALLER : BIGGER);
+}
+
 class BST_tree {
 	private: Node* root;
 	public:	
@@ -39,36 +50,44 @@ class BST_tree {
 		stack<string> tree_deep_stack;
 
         BST_tree () : root (NULL), best_seller {NULL, NULL, NULL} {} ~BST_tree () {
-			delete root; delete best_seller[0]; delete best_seller[1]; delete best_seller[2]; delete best_seller;
+			delete root;
 		}
 
         Node* get_root () {return this->root;}
 
-		Node* BST_insert (Node* root, Node* ptr) {
-			if (root == NULL) {
-				if (best_seller[0] == NULL || ptr->key.na_sales > best_seller[0]->na_sales) {best_seller[0] = &ptr->key;}
-				if (best_seller[1] == NULL || ptr->key.eu_sales > best_seller[1]->eu_sales) {best_seller[1] = &ptr->key;}
-				if (best_seller[2] == NULL || ptr->key.others_sales > best_seller[2]->others_sales) {best_seller[2] = &ptr->key;}
-				return ptr;
-			}
-
-			if (compareAlphabetically(ptr->key, root->key) == SMALLER) {
-				root->left = BST_insert(root->left, ptr); root->left->parent = root;
-			} else if (compareAlphabetically(ptr->key, root->key) == BIGGER) {
-				root->right = BST_insert(root->right, ptr); root->right->parent = root;
-			} else if (compareAlphabetically(ptr->key, root->key) == EQUAL) {
-				root->key.na_sales += ptr->key.na_sales; root->key.eu_sales += ptr->key.eu_sales; root->key.others_sales += ptr->key.others_sales;
-				if (best_seller[0] == NULL || root->key.na_sales > best_seller[0]->na_sales) {best_seller[0] = &root->key;}
-				if (best_seller[1] == NULL || root->key.eu_sales > best_seller[1]->eu_sales) {best_seller[1] = &root->key;}
-				if (best_seller[2] == NULL || root->key.others_sales > best_seller[2]->others_sales) {best_seller[2] = &root->key;}
-			}
-
-			return root;
-		}
-
 		void insertValue (vector<string> n) {
 			publisher temp; temp.name = n[3]; temp.na_sales = stof(n[4]); temp.eu_sales = stof(n[5]); temp.others_sales = stof(n[6]);
 			Node* ptr = new Node(temp); root = BST_insert(root, ptr);
+		}
+
+		Node* BST_insert (Node* root, Node* ptr) {
+			if (root == NULL) {root = ptr; root->set_color(0); best_seller[0] = &ptr->key; best_seller[1] = &ptr->key; best_seller[2] = &ptr->key; return root;}
+
+			Node* parent = NULL; Node* curr = root; while (curr != NULL) {
+				parent = curr; 
+
+				if (compareAlphabetically(ptr->key, curr->key) == SMALLER) {curr = curr->left;}
+				else if (compareAlphabetically(ptr->key, curr->key) == BIGGER) {curr = curr->right;}
+				else if (compareAlphabetically(ptr->key, curr->key) == EQUAL) {
+					curr->key.na_sales += ptr->key.na_sales; curr->key.eu_sales += ptr->key.eu_sales; curr->key.others_sales += ptr->key.others_sales;
+					
+					if (curr->key.na_sales > best_seller[0]->na_sales) {best_seller[0] = &curr->key;}
+					if (curr->key.eu_sales > best_seller[1]->eu_sales) {best_seller[1] = &curr->key;}
+					if (curr->key.others_sales > best_seller[2]->others_sales) {best_seller[2] = &curr->key;}
+
+					return root;
+				}
+			}
+
+			ptr->parent = parent;
+
+			if (compareAlphabetically(ptr->key, parent->key) == SMALLER) {parent->left = ptr;} else {parent->right = ptr;}
+
+			if (ptr->key.na_sales > best_seller[0]->na_sales) {best_seller[0] = &ptr->key;}
+			if (ptr->key.eu_sales > best_seller[1]->eu_sales) {best_seller[1] = &ptr->key;}
+			if (ptr->key.others_sales > best_seller[2]->others_sales) {best_seller[2] = &ptr->key;}
+
+			return this->root;
 		}
 
         void find_best_seller () {
@@ -88,11 +107,19 @@ void print_best_sellers (int year, publisher* temp_publisher[3]) {
 
 BST_tree generate_BST_tree_from_csv (string file_name) {
     BST_tree temp_BSTtree; ifstream file (file_name); if (file.is_open()) {
-		string line; getline(file, line); while (getline(file, line)) {
+		string line; getline(file, line); int lastDecade = 1981; while (getline(file, line)) {
 			vector<string> tokens; string token = ""; for (int i = 0; i < line.size(); i++) {
 				if (line[i] == ',') {tokens.push_back(token); token = "";} else {token += line[i];}
-			} tokens.push_back(token); temp_BSTtree.insertValue(tokens);
+			} 
+			
+			int year = stoi(tokens[2]); if (year % 10 == 1 && year != lastDecade) {
+				print_best_sellers(year - 1, temp_BSTtree.best_seller); lastDecade = year;
+			}
+			
+			tokens.push_back(token); temp_BSTtree.insertValue(tokens);
 		} file.close();
+
+		print_best_sellers(2020, temp_BSTtree.best_seller);
 	} else {cerr << "Error: Unable to open file " << file_name << endl;}
 
     return temp_BSTtree;
@@ -101,18 +128,5 @@ BST_tree generate_BST_tree_from_csv (string file_name) {
 int main (int argc, char* argv[]) {
 	string fname = argv[1];	BST_tree BSTtree = generate_BST_tree_from_csv(fname);
 
-    // Fill this function.
-
 	return EXIT_SUCCESS;
-}
-
-enum Alphabetic_Order {BIGGER, EQUAL, SMALLER};
-Alphabetic_Order compareAlphabetically (publisher& a, publisher& b) {
-	int size = min(a.name.size(), b.name.size()); for (int i = 0; i < size; i++) {
-		char ai = (char)tolower(a.name[i]); char bi = (char)tolower(b.name[i]);
-		if (ai == bi) {continue;} 
-		else {return (ai < bi) ? SMALLER : BIGGER;}
-	}
-
-	return (a.name.size() == b.name.size()) ? EQUAL : ((a.name.size() < b.name.size()) ? SMALLER : BIGGER);
 }
