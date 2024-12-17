@@ -77,9 +77,7 @@ class BST_tree {
 
 					return root;
 				}
-			}
-
-			ptr->parent = parent;
+			} ptr->parent = parent;
 
 			if (compareAlphabetically(ptr->key, parent->key) == SMALLER) {parent->left = ptr;} else {parent->right = ptr;}
 
