@@ -1,3 +1,4 @@
-Average insertion time: 741 nanoseconds
-Average search time: 644 nanoseconds
-Average find best seller time: 25 nanoseconds
+Total insertion time: 7773.7 nanoseconds
+Average insertion time: 479 nanoseconds
+Average search time: 411 nanoseconds
+Average find best seller time: 19 nanoseconds
