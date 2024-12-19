@@ -7,7 +7,7 @@
             "command": "/usr/bin/g++",
             "args": [
                 "-g",
-                "${fileDirname}/solution_RBT_tree.cpp",
+                "${fileDirname}/*.cpp",
                 "-I",
                 "${fileDirname}/../include",
                 "-o",
