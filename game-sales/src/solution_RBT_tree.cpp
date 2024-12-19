@@ -220,15 +220,38 @@ int main (int argc, char* argv[]) {
 	}
 
 	ofstream output_file; output_file.open("RBT_benchmark.txt");
-	output_file << "Total insertion time: " << (double) AVERAGE_INSERTION_TIME.first / 1000 << " nanoseconds" << std::endl;
-	output_file << "Average insertion time: " << AVERAGE_INSERTION_TIME.first / AVERAGE_INSERTION_TIME.second << " nanoseconds" << std::endl;
-	output_file << "Average search time: " << AVERAGE_SEARCH_TIME.first / AVERAGE_SEARCH_TIME.second << " nanoseconds" << std::endl;
-	output_file << "Average find best seller time: " << AVERAGE_FIND_BEST_SELLER.first / AVERAGE_FIND_BEST_SELLER.second << " nanoseconds" << std::endl;
+	output_file << "Total insertion time: " << (double) AVERAGE_INSERTION_TIME.first / 1000 << " microseconds" << endl;
+	output_file << "Average insertion time: " << AVERAGE_INSERTION_TIME.first / AVERAGE_INSERTION_TIME.second << " nanoseconds" << endl;
+	output_file << "Average search time: " << AVERAGE_SEARCH_TIME.first / AVERAGE_SEARCH_TIME.second << " nanoseconds" << endl;
+	output_file << "Average find best seller time: " << AVERAGE_FIND_BEST_SELLER.first / AVERAGE_FIND_BEST_SELLER.second << " nanoseconds" << endl;
 
-	cout << "Total insertion time: " << (double) AVERAGE_INSERTION_TIME.first / 1000 << " nanoseconds" << std::endl;
-	cout << "Average insertion time: " << AVERAGE_INSERTION_TIME.first / AVERAGE_INSERTION_TIME.second << " nanoseconds" << std::endl;
-	cout << "Average search time: " << AVERAGE_SEARCH_TIME.first / AVERAGE_SEARCH_TIME.second << " nanoseconds" << std::endl;
-	cout << "Average find best seller time: " << AVERAGE_FIND_BEST_SELLER.first / AVERAGE_FIND_BEST_SELLER.second << " nanoseconds" << std::endl;
+	cout << "Total insertion time: " << (double) AVERAGE_INSERTION_TIME.first / 1000 << " microseconds" << endl;
+	cout << "Average insertion time: " << AVERAGE_INSERTION_TIME.first / AVERAGE_INSERTION_TIME.second << " nanoseconds" << endl;
+	cout << "Average search time: " << AVERAGE_SEARCH_TIME.first / AVERAGE_SEARCH_TIME.second << " nanoseconds" << endl;
+	cout << "Average find best seller time: " << AVERAGE_FIND_BEST_SELLER.first / AVERAGE_FIND_BEST_SELLER.second << " nanoseconds" << endl;
+
+	AVERAGE_INSERTION_TIME = {0, 0}; AVERAGE_SEARCH_TIME = {0, 0}; AVERAGE_FIND_BEST_SELLER = {0, 0};
+
+	RB_tree orderedInputTree;
+	sort(ALL_PUBLISHERS.begin(), ALL_PUBLISHERS.end());
+	for (int i = 0; i < ALL_PUBLISHERS.size(); i++) {orderedInputTree.insertValue(vector<string> {"", "", "", ALL_PUBLISHERS[i], "0", "0", "0"});}
+	for (int i = 0; i < 50; i++) {
+		int random = rand() % ALL_PUBLISHERS.size(); publisher temp; temp.name = ALL_PUBLISHERS[random];
+		auto start = chrono::high_resolution_clock::now(); Node* curr = orderedInputTree.get_root(); while (curr != NULL) {
+			if (compareAlphabetically(temp, curr->key) == SMALLER) {curr = curr->left;}
+			else if (compareAlphabetically(temp, curr->key) == BIGGER) {curr = curr->right;}
+			else if (compareAlphabetically(temp, curr->key) == EQUAL) {break;}
+		} auto end = chrono::high_resolution_clock::now();
+		AVERAGE_SEARCH_TIME.first += (chrono::duration_cast<chrono::nanoseconds>(end - start)).count(); 
+		AVERAGE_SEARCH_TIME.second++; 
+	}
+
+	output_file << "Average insertion time for ordered input data: " << AVERAGE_INSERTION_TIME.first / AVERAGE_INSERTION_TIME.second << " nanoseconds" << endl;
+	output_file << "Average search time for ordered input data: " << AVERAGE_SEARCH_TIME.first / AVERAGE_SEARCH_TIME.second << " nanoseconds" << endl;
+	output_file.close();
+
+	cout << "Average insertion time for ordered input data: " << AVERAGE_INSERTION_TIME.first / AVERAGE_INSERTION_TIME.second << " nanoseconds" << endl;
+	cout << "Average search time for ordered input data: " << AVERAGE_SEARCH_TIME.first / AVERAGE_SEARCH_TIME.second << " nanoseconds" << endl;
 
 	return EXIT_SUCCESS;
 }
