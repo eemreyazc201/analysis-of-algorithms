@@ -35,7 +35,8 @@ class Node {
 enum Alphabetic_Order {BIGGER, EQUAL, SMALLER};
 Alphabetic_Order compareAlphabetically (publisher& a, publisher& b) {
 	int size = min(a.name.size(), b.name.size()); for (int i = 0; i < size; i++) {
-		char ai = (char)tolower(a.name[i]); char bi = (char)tolower(b.name[i]);
+		// char ai = (char)tolower(a.name[i]); char bi = (char)tolower(b.name[i]);
+		char ai = a.name[i]; char bi = b.name[i];
 		if (ai < bi) {return SMALLER;} else if (ai > bi) {return BIGGER;}
 	} return (a.name.size() == b.name.size()) ? EQUAL : ((a.name.size() < b.name.size()) ? SMALLER : BIGGER);
 }
@@ -152,7 +153,8 @@ class RB_tree {
 
         void find_best_seller () {
 
-		    // Fill this function.
+		    // I alreday have the best sellers in the best_seller array
+			// because I'm updating it while inserting
 
 		}
 };
@@ -182,26 +184,7 @@ RB_tree generate_RBT_tree_from_csv (string file_name) {
     return temp_RBtree;
 }
 
-void inorder (Node* root, ofstream& out) {
-	if (root == nullptr) return; 
-	inorder(root->left, out); out << root->key.name << endl; inorder(root->right, out);
-}
-
-bool is_balanced (Node* root) {
-	ofstream output_file ("RBT.txt"); inorder(root, output_file); output_file.close();
-	ifstream input_file ("RBT.txt"); string previousLine = ""; string line; while (getline(input_file, line)) {
-		int size = min(previousLine.size(), line.size()); for (int i = 0; i < size; i++) {
-			char ai = (char)tolower(previousLine[i]); char bi = (char)tolower(line[i]);
-			if (ai < bi) {return true;} else if (ai > bi) {return false;}
-		} if (previousLine.size() >= line.size()) {return false;}
-	} input_file.close(); return true;
-}
-
 int main (int argc, char* argv[]) {
-	string fname = argv[1];	RB_tree RBtree = generate_RBT_tree_from_csv(fname);
-	RBtree.preorder();
-
-	cout << ((is_balanced(RBtree.get_root())) ? "The tree is balanced." : "The tree is not balanced.") << endl;
-
+	string fname = argv[1];	RB_tree RBtree = generate_RBT_tree_from_csv(fname); RBtree.preorder();
 	return EXIT_SUCCESS;
 }

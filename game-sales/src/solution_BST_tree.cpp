@@ -35,12 +35,10 @@ class Node {
 enum Alphabetic_Order {BIGGER, EQUAL, SMALLER};
 Alphabetic_Order compareAlphabetically (publisher& a, publisher& b) {
 	int size = min(a.name.size(), b.name.size()); for (int i = 0; i < size; i++) {
-		char ai = (char)tolower(a.name[i]); char bi = (char)tolower(b.name[i]);
-		if (ai == bi) {continue;} 
-		else {return (ai < bi) ? SMALLER : BIGGER;}
-	}
-
-	return (a.name.size() == b.name.size()) ? EQUAL : ((a.name.size() < b.name.size()) ? SMALLER : BIGGER);
+		// char ai = (char)tolower(a.name[i]); char bi = (char)tolower(b.name[i]);
+		char ai = a.name[i]; char bi = b.name[i];
+		if (ai < bi) {return SMALLER;} else if (ai > bi) {return BIGGER;}
+	} return (a.name.size() == b.name.size()) ? EQUAL : ((a.name.size() < b.name.size()) ? SMALLER : BIGGER);
 }
 
 class BST_tree {
@@ -90,7 +88,8 @@ class BST_tree {
 
         void find_best_seller () {
 
-		    // Fill this function.
+		    // I alreday have the best sellers in the best_seller array
+			// because I'm updating it while inserting
 
 		}
 };
@@ -125,6 +124,5 @@ BST_tree generate_BST_tree_from_csv (string file_name) {
 
 int main (int argc, char* argv[]) {
 	string fname = argv[1];	BST_tree BSTtree = generate_BST_tree_from_csv(fname);
-
 	return EXIT_SUCCESS;
 }
