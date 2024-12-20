@@ -158,12 +158,12 @@ int main (int argc, char* argv[]) {
 	}
 
 	ofstream output_file; output_file.open("BST_benchmark.txt");
-	output_file << "Total insertion time: " << (double) AVERAGE_INSERTION_TIME.first / 1000 << " nanoseconds" << std::endl;
+	output_file << "Total insertion time: " << (double) AVERAGE_INSERTION_TIME.first / 1000 << " microseconds" << std::endl;
 	output_file << "Average insertion time: " << AVERAGE_INSERTION_TIME.first / AVERAGE_INSERTION_TIME.second << " nanoseconds" << std::endl;
 	output_file << "Average search time: " << AVERAGE_SEARCH_TIME.first / AVERAGE_SEARCH_TIME.second << " nanoseconds" << std::endl;
 	output_file << "Average find best seller time: " << AVERAGE_FIND_BEST_SELLER.first / AVERAGE_FIND_BEST_SELLER.second << " nanoseconds" << std::endl;
 
-	cout << "Total insertion time: " << (double) AVERAGE_INSERTION_TIME.first / 1000 << " nanoseconds" << std::endl;
+	cout << "Total insertion time: " << (double) AVERAGE_INSERTION_TIME.first / 1000 << " microseconds" << std::endl;
 	cout << "Average insertion time: " << AVERAGE_INSERTION_TIME.first / AVERAGE_INSERTION_TIME.second << " nanoseconds" << std::endl;
 	cout << "Average search time: " << AVERAGE_SEARCH_TIME.first / AVERAGE_SEARCH_TIME.second << " nanoseconds" << std::endl;
 	cout << "Average find best seller time: " << AVERAGE_FIND_BEST_SELLER.first / AVERAGE_FIND_BEST_SELLER.second << " nanoseconds" << std::endl;
